@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify, render_template
+from flask import Flask, render_template, request, jsonify
 from flask_socketio import SocketIO, emit
 import os
 import requests
@@ -14,7 +14,7 @@ def home():
 
 @app.route("/game")
 def game():
-    return render_template("game.html")  # This serves the game page
+    return render_template("game.html")
 
 @socketio.on("strike")
 def handle_strike(data):
