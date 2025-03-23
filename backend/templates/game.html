@@ -4,9 +4,49 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Carrom Mini App</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.5.4/socket.io.js"></script>
+    <style>
+        body { text-align: center; font-family: Arial, sans-serif; }
+        canvas { background: #f0d9b5; display: block; margin: auto; border: 5px solid black; }
+        button { padding: 10px; font-size: 16px; margin-top: 20px; }
+    </style>
 </head>
 <body>
     <h1>Carrom Game</h1>
-    <p>Game is loading...</p>
+    <canvas id="carromBoard" width="400" height="400"></canvas>
+    <button onclick="strike()">Strike!</button>
+    <p id="status">Waiting for move...</p>
+
+    <script>
+        const canvas = document.getElementById("carromBoard");
+        const ctx = canvas.getContext("2d");
+        const socket = io();  
+
+        let striker = { x: 200, y: 350, radius: 10 };  
+        
+        function drawBoard() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = "black";
+            ctx.beginPath();
+            ctx.arc(striker.x, striker.y, striker.radius, 0, Math.PI * 2);
+            ctx.fill();
+        }
+
+        function strike() {
+            striker.y -= 50;  
+            socket.emit("strike", { x: striker.x, y: striker.y });
+            document.getElementById("status").innerText = "You hit the striker!";
+            drawBoard();
+            setTimeout(() => { striker.y = 350; drawBoard(); }, 500);
+        }
+
+        socket.on("update_striker", (data) => {
+            striker.x = data.x;
+            striker.y = data.y;
+            drawBoard();
+        });
+
+        drawBoard();
+    </script>
 </body>
 </html>
