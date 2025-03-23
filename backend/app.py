@@ -1,9 +1,9 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template
 from flask_socketio import SocketIO, emit
 import os
 import requests
 
-app = Flask(__name__)
+app = Flask(__name__, template_folder="templates")
 socketio = SocketIO(app, cors_allowed_origins="*")
 
 BOT_TOKEN = os.getenv("BOT_TOKEN")
@@ -11,6 +11,10 @@ BOT_TOKEN = os.getenv("BOT_TOKEN")
 @app.route("/")
 def home():
     return "Carrom Game Server Running!"
+
+@app.route("/game")
+def game():
+    return render_template("game.html")  # This serves the game page
 
 @socketio.on("strike")
 def handle_strike(data):
