@@ -3,3 +3,7 @@ tgcrypto
 flask
 requests
 gunicorn
+Flask
+Flask-SocketIO
+eventlet
+gunicorn
